@@ -26,4 +26,4 @@ READ = True if type(sub1) in {Professor} and departments in departments_taught
 NOTE: departments_taught is the subject attribute and departments is a resource attribute. They are reversed here because typically you want to check whether the subject attibute of the constraint is a *superset* of the resource attribute. 
 
 #### Actions
-Actions are what you would expect, and usually consist of the typical options: read, write, and execute.
+Actions are what you would expect, and usually consist of the typical options: read, write, and execute. 
