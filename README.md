@@ -1,12 +1,12 @@
 # CABA_ABAC
-The Cool and Absolutely Bad Ass Attribute Based Access Control policy simulator. This project is a shell implementation of ABAC policy using a university system as the organizational body. It is meant to demonstrate how an ABAC policy can work in a shell environment, as well as 
+The Cool and Absolutely Bad Ass Attribute Based Access Control Policy Simulator. This project is a shell implementation of ABAC policy using a university system as the organizational body. It is meant to demonstrate how an ABAC policy can work in a shell environment, as well as to demonstrate the power and efficiency that ABAC policies can provide. 
 
 ### Getting Started:
-To run the program from the main directory of the repository simply start the abac-shell.py script like so:
+To run the program from the main directory of the repository simply start the ```abac-shell.py``` script like so:
 ```
 python abac-shell.py
 ```
-To see print a help menu of commands that can be run, simply type in ```help``` or ```?```.
+To print a help menu of commands that can be run, simply type in ```help``` or ```?```.
 
 TODO: 
 - [] Define organization with roles, subjects, resources, and attributes.
