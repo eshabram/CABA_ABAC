@@ -49,6 +49,12 @@ def create_rule(subject_role, resource_type, constraint):
     conn.commit()
     print(f"Rule added: {subject_role} can access {resource_type} with constraint {constraint}")
 
+def all_from(table):
+    query = f"SELECT * FROM {table}"
+    cur.execute(query)
+    rows = cur.fetchall()  # Fetch all rows from the table
+    return rows
+
 # UNDER CONSTRUCTION
 # def evaluate_access(subject_name, resource_type):
 #     cur.execute('''SELECT role, courses_taught FROM Subjects WHERE name = ?''', (subject_name,))

@@ -5,6 +5,12 @@ conn = sqlite3.connect("attributes.db")
 
 cur = conn.cursor()
 
+cur.execute('DROP TABLE IF EXISTS Subjects')
+cur.execute('DROP TABLE IF EXISTS Departments')
+cur.execute('DROP TABLE IF EXISTS Courses')
+cur.execute('DROP TABLE IF EXISTS Resources')
+cur.execute('DROP TABLE IF EXISTS Rules')
+
 # Subjects table
 cur.execute('''CREATE TABLE IF NOT EXISTS Subjects (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,10 +58,11 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Rules (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 subject_role TEXT,
                 resource_type TEXT,
-                constraint TEXT
+                rule TEXT
             )''')
 
 
 
 conn.commit()
 conn.close()
+print("Tables dropped and re-created successfully.")
