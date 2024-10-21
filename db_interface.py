@@ -6,15 +6,40 @@ cur = conn.cursor()
 
 def add_subject(subject):
     if subject.role is "admin":
-        print()
-    if subject.role is "chancellor":
-        print(), 
-    if subject.role is "staff":
-        print()
-    if subject.role is "professor":
-        print()
-    if subject.role is "student":
-        print()
+        try:
+            cur.execute('''INSERT INTO Subjects (uid, name, role, department) VALUES (?, ?, ?, ?)'''
+                                (subject.uid, subject.name, "admin", subject.department))
+            conn.commit()
+        except:
+            print("Error inserting subject")
+    elif subject.role is "chancellor":
+        try:
+            cur.execute('''INSERT INTO Subjects (uid, name, role, department) VALUES (?, ?, ?, ?)'''
+                                (subject.uid, subject.name, "chancellor", subject.department))
+            conn.commit()
+        except:
+            print("Error inserting subject")
+    elif subject.role is "staff":
+        try:
+            cur.execute('''INSERT INTO Subjects (uid, name, role, department) VALUES (?, ?, ?, ?)'''
+                                (subject.uid, subject.name, "staff", subject.department))
+            conn.commit()
+        except:
+            print("Error inserting subject")
+    elif subject.role is "professor":
+        try:
+            cur.execute('''INSERT INTO Subjects (uid, name, role, department) VALUES (?, ?, ?, ?)'''
+                                (subject.uid, subject.name, "professor", subject.department))
+            conn.commit()
+        except:
+            print("Error inserting subject")
+    elif subject.role is "student":
+        try:
+            cur.execute('''INSERT INTO Subjects (uid, name, role, department) VALUES (?, ?, ?, ?)'''
+                                (subject.uid, subject.name, "student", subject.department))
+            conn.commit()
+        except:
+            print("Error inserting subject")
     else:
         print("Unknown role")
 
