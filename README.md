@@ -16,7 +16,7 @@ TODO:
 ## Our Organization: University
 ### Subjects:
 - Subject roles: Chancellor, Administrator, Professor, Student
-- departments: "ecs", "eec", "fo" (Finacial Office), "reg" (registrar)
+- departments: "ecs", "eec", "fo" (Financial Office), "reg" (registrar)
 - is_chair: Boolean
 - courses_taught: "ecs_235a", "ecs_235b", "ecs_236", "ecs_252", "ecs_253", "ecs_255", "ecs_257", "eec_201", "eec_244"
 - courses_taken: "ecs_235a", "ecs_235b", "ecs_236", "ecs_252", "ecs_253", "ecs_255", "ecs_257", "eec_201", "eec_244"
