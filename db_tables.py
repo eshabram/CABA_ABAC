@@ -6,59 +6,35 @@ conn = sqlite3.connect("attributes.db")
 cur = conn.cursor()
 
 cur.execute('DROP TABLE IF EXISTS Subjects')
-cur.execute('DROP TABLE IF EXISTS Departments')
-cur.execute('DROP TABLE IF EXISTS Courses')
 cur.execute('DROP TABLE IF EXISTS Resources')
-cur.execute('DROP TABLE IF EXISTS Rules')
+cur.execute('DROP TABLE IF EXISTS Passwords')
 
 # Subjects table
 cur.execute('''CREATE TABLE IF NOT EXISTS Subjects (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT,
-                role TEXT,
-                department TEXT,
-                subdepartment TEXT,
-                is_chair BOOLEAN,
-                courses_taught TEXT,
-                courses_taken TEXT
+                uid TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                role TEXT NOT NULL,
+                department TEXT NULL,
+                subdepartment TEXT NULL,
+                is_chair BOOLEAN NULL,
+                courses_taught TEXT NULL,
+                courses_taken TEXT NULL
             )''')
 
-# Departments table
-cur.execute('''CREATE TABLE IF NOT EXISTS Departments (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT UNIQUE,
-                chair_id INTEGER,
-                FOREIGN KEY(chair_id) REFERENCES Subjects(id)
-            )''')
-
-# Courses table
-cur.execute('''CREATE TABLE IF NOT EXISTS Courses (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                code TEXT UNIQUE,
-                department_id INTEGER,
-                professor_id INTEGER,
-                FOREIGN KEY(department_id) REFERENCES Departments(id),
-                FOREIGN KEY(professor_id) REFERENCES Subjects(id)
-            )''')
 
 # Resources table
 cur.execute('''CREATE TABLE IF NOT EXISTS Resources (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                type TEXT,
-                student_id INTEGER,
-                department_id INTEGER,
-                course_id INTEGER,
-                FOREIGN KEY(student_id) REFERENCES Subjects(id),
-                FOREIGN KEY(department_id) REFERENCES Departments(id),
-                FOREIGN KEY(course_id) REFERENCES Courses(id)
+                type TEXT not null,
+                student TEXT,
+                departments TEXT,
+                courses TEXT,
             )''')
 
-# Rules table
-cur.execute('''CREATE TABLE IF NOT EXISTS Rules (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                subject_role TEXT,
-                resource_type TEXT,
-                rule TEXT
+# Passwords table
+cur.execute('''CREATE TABLE IF NOT EXISTS Passwords (
+                uid TEXT PRIMARY KEY,
+                salted_hash TEXT
             )''')
 
 
