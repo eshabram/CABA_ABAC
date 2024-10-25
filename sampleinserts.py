@@ -62,3 +62,4 @@ cur.execute("INSERT INTO Resources (type, student, departments, courses) VALUES 
 cur.execute("INSERT INTO Resources (type, student, departments, courses) VALUES ('exam', 'Tina King', 'cs', 'cs_420');")
 
 print("Samples inserted into Resources")
+conn.commit()
