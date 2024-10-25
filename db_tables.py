@@ -28,7 +28,7 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Resources (
                 type TEXT not null,
                 student TEXT,
                 departments TEXT,
-                courses TEXT,
+                courses TEXT
             )''')
 
 # Passwords table
