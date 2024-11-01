@@ -15,7 +15,7 @@ TODO:
 
 ## Our Organization: University
 ### Subjects:
-- Subject roles: admin, chancellor, staff, professor, student
+- Subject roles: "admin", "chancellor", "staff", "professor", "student"
 - departments: "ecs", "eec", "fo" (Finacial Office), "reg" (registrar)
 - subdepartments: "ecs", "eec", "fo", "reg"
 - is_chair: Boolean
@@ -60,8 +60,8 @@ subject.courses_taken = {"ecs_235a", "ecs_252"} # note the added section courses
 ```
 
 ### Resources: 
-- Resource types: gradebook, transcript, finacial_record, donor_record, create_user, edit_user, delete_user
-- Resource student: Unique ID of associated studet for some of the types
+- Resource types: "gradebook", "transcript", "finacial_record", "donor_record", "user_file", "create_user", "edit_user", "delete_user"
+- Resource subject: Unique ID of associated studet for some of the types
 - Resource Departments: "ecs", "eec", "fo", "reg"
 - Resource Courses: "ecs_235a", "ecs_235b", "ecs_236", "ecs_252", "ecs_253", "ecs_255", "ecs_257", "eec_201", "eec_244"
 
