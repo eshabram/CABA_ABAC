@@ -16,13 +16,13 @@ def check_rules(subject, resource):
     READ = READ or ("fo" in subject.departments and resource.type == "donor_record" and subject.departments >= resource.subdepartments) 
 
     # A person can read their own transcript.  
-    READ = READ or (subject.role in {"student"} and resource.type == "transcript" and subject.id == resource.student) 
+    READ = READ or (subject.role in {"student"} and resource.type == "transcript" and subject.id == resource.subject) 
 
     # You can read and write any transcript if you work in the registrars office. (small office I guess)
     READ, WRITE = tuple(x or "reg" in subject.departments and resource.type == "transcript" for x in (READ, WRITE)) 
 
     # A student can read their own finacial_record
-    READ = READ or (subject.role in {"student"} and resource.type == "finacial_record" and subject.id == resource.student)
+    READ = READ or (subject.role in {"student"} and resource.type == "finacial_record" and subject.id == resource.subject)
 
     # A person working in finacial office can read and write any finacial record.
     READ, WRITE = tuple(x or "fo" in subject.departments and resource.type == "finacial_record" for x in (READ, WRITE))
