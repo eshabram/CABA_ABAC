@@ -45,14 +45,14 @@ admin.role = "admin"
 transcript1 = Resource()
 transcript1.id = "transcript_1"
 transcript1.type = "transcript"
-transcript1.student = "Elliot_Shabram"
+transcript1.subject = "Elliot_Shabram"
 transcript1.departments = {"ecs"}
 transcript1.courses = {"ecs_235a", "ecs_252"}
 
 transcript2 = Resource()
 transcript2.id = "transcript_1"
 transcript2.type = "transcript"
-transcript2.student = "Bob_McShitty"
+transcript2.subject = "Bob_McShitty"
 transcript2.departments = {"ecs"}
 transcript2.courses = {"ecs_235a", "ecs_252"}
 
