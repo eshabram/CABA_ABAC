@@ -34,7 +34,9 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Resources (
 # Passwords table
 cur.execute('''CREATE TABLE IF NOT EXISTS Passwords (
                 uid TEXT PRIMARY KEY,
-                salted_hash TEXT
+                salted_hash TEXT,
+                salt TEXT
+            
             )''')
 
 
