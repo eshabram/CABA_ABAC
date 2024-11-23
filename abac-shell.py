@@ -1,6 +1,7 @@
-import subprocess, readline, argparse
+import subprocess,  argparse
+
 from utils.db_utils import *
-from utils.utils import authenticate_user
+from utils.utils import *
 
 allowed_cmds = ["ls", "pwd", "echo"]
 internal_cmds = ["read", "write", "touch"]
@@ -18,7 +19,7 @@ SUBJECT = ""
 
 def enter_sandbox():
     """ Changes dir to the sandbox dir where files can be safely created and removed """
-    sandbox_dir = os.path.join(current_dir, 'sandbox')
+    sandbox_dir = os.path.join(current_dir, 'sandbox') 
     if not os.path.exists(sandbox_dir):
         os.makedirs(sandbox_dir)
     # use os instead of subprocess function to globally change dir
@@ -65,7 +66,10 @@ def run_shell(args):
         elif cmd_tokens[0] == "rm":
             if len(cmd_tokens):
                 name = cmd_tokens[1].split("/")[-1]
-                # TODO: Check your privilege
+                uname= input("Enter your username")
+                pwd = input("Enter your password")
+                authenticate_user(uname,pwd)
+                # TODO: Check your privilege   [authenticate(user)]
                 try:
                     os.remove(name)
                 except Exception as e:
@@ -74,7 +78,10 @@ def run_shell(args):
         # read a file using the cat command
         elif cmd_tokens[0] == "read":
             if len(cmd_tokens) == 2:
-                # TODO: Check your privilege 
+                # TODO: Check your privilege  [authenticate(user)]
+                uname= input("Enter your username")
+                pwd = input("Enter your password")
+                authenticate_user(uname,pwd)
                 cmd = ["cat", cmd_tokens[1]]
                 if os.path.exists(cmd_tokens[1]):
                     try:
@@ -87,22 +94,40 @@ def run_shell(args):
                 print("Error: No path specified")
 
         # write a file using nano. you can rename if needed
+        
         elif cmd_tokens[0] == "write":
             if len(cmd_tokens) == 2:
-                # TODO: Check your privilege
-                try:
-                    subprocess.call(['nano', cmd_tokens[1]])
-                except subprocess.CalledProcessError as e:
-                    print(f"Error: {e}")
+                # TODO: Check your privilege  [authenticate(user)]
+                uname= input("Enter your username ")
+                pwd = input("Enter your password ")
+                authenticated= authenticate_user(uname,pwd)
+                if authenticated:
+                  #if can_access("write", department, clearance_level): TODO: Check /evaluate rules based on loaded policies
+
+                  try:
+                      subprocess.call(['notepad', cmd_tokens[1]])
+                  except subprocess.CalledProcessError as e:
+                      print(f"Error: {e}")
+                else:
+                    print("Error! You do not have permission to access this file")
             else:
-                print("Error: No path specified")
+                print("Error: No path specified")   
+        
+
 
         # create a new subject
         elif cmd_tokens[0] in ["new-subject","ns"] :
             if len(cmd_tokens) == 2:
                 sub = cmd_tokens[1]
-                # TODO: Check your privilege
-                # TODO: database call to add subject
+                # TODO: Check your privilege   [authenticate(user)]
+                uname= input("Enter your username ")
+                pwd = input("Enter your password ")
+                authenticated= authenticate_user(uname,pwd)
+                if authenticated  == "admin":
+                # TODO: database call to add subject   [register(user)]
+                  register()
+                else:
+                    print("Error! You are not authenticated")
             else:
                 print("Error: no subject specified")
 
@@ -111,7 +136,10 @@ def run_shell(args):
             print("edit an existing subject")
             if len(cmd_tokens) == 2:
                 sub = cmd_tokens[1]
-                # TODO: Check your privilege
+                # TODO: Check your privilege   [authenticate(user)]
+                uname= input("Enter your username")
+                pwd = input("Enter your password")
+                authenticate_user(uname,pwd)
                 # TODO: database call to edit the subject
             else:
                 print("Error: no subject specified")
@@ -142,7 +170,7 @@ if __name__=="__main__":
 
     # check for developer mode
     if args.dev:
-        SUBJECT = authenticate_user() # TODO: Akanksha, here is where the authentication will be called from. 
+        SUBJECT = login() # TODO: Akanksha, here is where the authentication will be called from. 
     else: 
         SUBJECT = "admin"
 
