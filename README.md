@@ -10,8 +10,8 @@ To print a help menu of commands that can be run, simply type in ```help``` or `
 
 TODO: 
 - [x] Define organization with roles, subjects, resources, and attributes.
-- [] Establish subject, resource, and ruleset db tables. Subjects and resources will have unique IDs and various attributes in the form of dictionaries or lists. These tables are non-relational.
-- [] Define the ruleset. A rule consists of 4 items: a subject condition, a resource condition, a constraint, and an action.
+- [x] Establish subject, resource, and ruleset db tables. Subjects and resources will have unique IDs and various attributes in the form of dictionaries or lists. These tables are non-relational.
+- [x] Define the ruleset. A rule consists of 4 items: a subject condition, a resource condition, a constraint, and an action.
 
 ## Our Organization: University
 ### Subjects:
@@ -129,3 +129,7 @@ In English: "A person in the finacial office can read a donor record if the depa
 
 #### Actions
 Actions are what you would expect, and usually consist of the typical options: read, write, and execute. 
+
+### Notes on db:
+- change student column to subject in Resource table
+- uid and resource id field should not be a number. It should be a unique string that we set on creation because it will be associated with the object

@@ -14,29 +14,36 @@ def add_subject(subject):
 
 
 def add_resource(resource):
-    if resource.student != None:
-        cur.execute('''SELECT uid FROM Subjects WHERE name = ?''', (resource.student,))
-        student = cur.fetchone()
-        if student:
-            cur.execute('''INSERT INTO Resources (type, student, departments, courses) 
+    if resource.subject != None:
+        # we need to match the sub id with res id. 
+        cur.execute('''SELECT uid FROM Subjects WHERE uid = ?''', (resource.subject,))
+        subject = cur.fetchone()
+        if subject:
+            cur.execute('''INSERT INTO Resources (id, owner, type, subject, departments, courses) 
                         VALUES (?, ?,  ?, ?)''', 
-                        (resource.type, student[0], resource.departments, resource.courses))
+                        (resource.id, resource.owner, resource.type, subject[0], resource.departments, resource.courses))
             conn.commit()
-            print(f"Resource {resource.type} added for {resource.student}")
+            print(f"Resource {resource.type} added for {resource.subject}")
+            res_id = cur.lastrowid  # Retrieve the ID of the newly inserted row
+            return res_id
         else:
             print("Student not found.")
+            return None
     
     elif resource.courses == None:
         cur.execute('''INSERT INTO Resources (type, departments) 
                         VALUES (?, ?)''', (resource.type, resource.departments))
         conn.commit()
         print(f"Resource {resource.type} added")
-    
+        res_id = cur.lastrowid
+        return res_id
     else:
         cur.execute('''INSERT INTO Resources (type, departments, courses) 
                         VALUES (?, ?, ?)''', (resource.type, resource.departments, resource.courses))
         conn.commit()
         print(f"Resource {resource.type} added")
+        res_id = cur.lastrowid
+        return res_id
 
 def subject_row(uid):
     query = "SELECT * FROM Subjects WHERE uid = ? LIMIT 1"
@@ -44,7 +51,7 @@ def subject_row(uid):
     rows = cur.fetchone() 
     return rows
 
-def resource_row(id):
+def resource_row(id): # TODO: continue to ensure the ids are the ones saved and returned, and not the names
     query = "SELECT * FROM Resources WHERE id = ? LIMIT 1"
     cur.execute(query, (id,))
     rows = cur.fetchone() 

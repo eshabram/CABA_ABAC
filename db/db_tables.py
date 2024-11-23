@@ -25,8 +25,9 @@ cur.execute('''CREATE TABLE IF NOT EXISTS Subjects (
 # Resources table
 cur.execute('''CREATE TABLE IF NOT EXISTS Resources (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                owner TEXT null,
                 type TEXT not null,
-                student TEXT,
+                subject TEXT,
                 departments TEXT,
                 courses TEXT
             )''')
