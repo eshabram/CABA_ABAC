@@ -1,3 +1,5 @@
+DEPARTMENTS = []
+RESOURCE_TYPES = ["user_file", "gradebook", "transcript", "finacial_record", "donor_record"]
 
 class Subject():
     def __init__(self, id="", role="", departments=set(), is_chair=False, courses_taught=set(), courses_taken=set()):
@@ -16,16 +18,16 @@ class Subject():
                 f"  is_chair={self.is_chair},\n"
                 f"  courses_taught={self.courses_taught if self.courses_taught else '{}'},\n"
                 f"  courses_taken={self.courses_taken if self.courses_taken else '{}'}\n"
-                f")")
+                f")\n")
 
 class Resource():
-    def __init__(self, id="", owner="", type="", subject="", departments=set(), courses=set()):
+    def __init__(self, id=-1, name="", owner="", type="", subject="", departments=set(), courses=set()):
         self.id = id
+        self.name = name
         self.owner = owner
         self.type = type
         self.subject = subject
         self.departments = departments
-        self.subdepartments = set()
         self.courses = courses
 
     def __str__(self):
@@ -35,7 +37,6 @@ class Resource():
                 f"  type='{self.type}',\n"
                 f"  subject='{self.subject}',\n"
                 f"  departments={self.departments if self.departments else '{}'},\n"
-                f"  subdepartments={self.subdepartments if self.subdepartments else '{}'},\n"
                 f"  courses={self.courses if self.courses else '{}'}\n"
-                f")")
+                f")\n")
         

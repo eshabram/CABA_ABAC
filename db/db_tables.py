@@ -1,47 +1,64 @@
 import sqlite3
+from utils.utils import hash_password, load_file
+from utils.organization import SUBJECTS_LIST, PASSWORD_LIST, RESOURCE_LIST
+from db.db_interface import add_subject, add_resource, add_password, print_table, resource_row
 
-
-conn = sqlite3.connect("attributes.db")
-
+conn = sqlite3.connect("db/attributes.db")
 cur = conn.cursor()
 
-cur.execute('DROP TABLE IF EXISTS Subjects')
-cur.execute('DROP TABLE IF EXISTS Resources')
-cur.execute('DROP TABLE IF EXISTS Passwords')
+def load_organization():
+    cur.execute('DROP TABLE IF EXISTS Subjects')
+    cur.execute('DROP TABLE IF EXISTS Resources')
+    cur.execute('DROP TABLE IF EXISTS Passwords')
 
-# Subjects table
-cur.execute('''CREATE TABLE IF NOT EXISTS Subjects (
-                uid TEXT PRIMARY KEY,
-                name TEXT NOT NULL,
-                role TEXT NOT NULL,
-                department TEXT NULL,
-                subdepartment TEXT NULL,
-                is_chair BOOLEAN NULL,
-                courses_taught TEXT NULL,
-                courses_taken TEXT NULL
-            )''')
-
-
-# Resources table
-cur.execute('''CREATE TABLE IF NOT EXISTS Resources (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                owner TEXT null,
-                type TEXT not null,
-                subject TEXT,
-                departments TEXT,
-                courses TEXT
-            )''')
-
-# Passwords table
-cur.execute('''CREATE TABLE IF NOT EXISTS Passwords (
-                uid TEXT PRIMARY KEY,
-                salted_hash TEXT,
-                salt TEXT
-            
-            )''')
+    # Subjects table
+    cur.execute('''CREATE TABLE IF NOT EXISTS Subjects (
+                    id TEXT PRIMARY KEY,
+                    role TEXT NULL,
+                    departments TEXT NULL,
+                    is_chair BOOLEAN NULL,
+                    courses_taught TEXT NULL,
+                    courses_taken TEXT NULL
+                )''')
 
 
+    # Resources table
+    cur.execute('''CREATE TABLE IF NOT EXISTS Resources (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT null, 
+                    owner TEXT null,
+                    type TEXT not null,
+                    subject TEXT,
+                    departments TEXT,
+                    courses TEXT
+                )''')
 
-conn.commit()
-conn.close()
-print("Tables dropped and re-created successfully.")
+    # Passwords table
+    cur.execute('''CREATE TABLE IF NOT EXISTS Passwords (
+                    id TEXT PRIMARY KEY,
+                    salted_hash TEXT,
+                    salt TEXT
+                )''')
+
+    for i, sub in enumerate(SUBJECTS_LIST):
+        try:
+            # add the user attributes and hashed passwords and salts 
+            add_subject(sub)
+            password, salt = hash_password(PASSWORD_LIST[i], sub.id)
+            print(type(password))
+            add_password(sub.id, password, salt)
+        except Exception as e:
+            print(e)
+
+    print_table('Subjects')
+    print_table('Passwords')
+    for res in RESOURCE_LIST:
+        res.id = add_resource(res)
+        load_file(res.name, res)
+        
+
+    print_table('Resources')
+
+    print("Tables dropped and re-created successfully.")
+    conn.commit()
+    conn.close()

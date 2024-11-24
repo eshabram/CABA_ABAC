@@ -1,5 +1,6 @@
 from utils.entities import Subject, Resource
 
+
 ###################### Subjects #################################
 admin = Subject()
 admin.id = "admin1"
@@ -41,40 +42,41 @@ carl.role = "staff"
 carl.departments = {"fo", "ecs", "eec"}
 
 SUBJECTS_LIST = [admin, elliot, gary, matt, dipak, lucy, carl]
+PASSWORD_LIST = ['password', 'ikeep$itreal', 'chancellor!!', 'supersecret!', 'lakjsdhffdsa$', 'kkajsdf&&&&', 'iamc4rl']
 ###################### Resources #################################
 transcript1 = Resource()
-transcript1.id = "transcript_1"
+transcript1.name = "transcript_1"
 transcript1.type = "transcript"
 transcript1.subject = "Elliot_Shabram"
 transcript1.departments = {"ecs"}
 transcript1.courses = {"ecs_235a", "ecs_252"}
 
 transcript2 = Resource()
-transcript2.id = "transcript_1"
+transcript2.name = "transcript_2"
 transcript2.type = "transcript"
 transcript2.subject = "Bob_McShitty"
 transcript2.departments = {"ecs"}
 transcript2.courses = {"ecs_235a", "ecs_252"}
 
 gradebook1 = Resource()
-gradebook1.id = "gradebook_1"
+gradebook1.name = "gradebook_1"
 gradebook1.type = "gradebook"
 gradebook1.departments = {"ecs"}
 gradebook1.courses = {"ecs_252"}
 
 gradebook2 = Resource()
-gradebook2.id = "gradebook_2"
+gradebook2.name = "gradebook_2"
 gradebook2.type = "gradebook"
 gradebook2.departments = {"ecs"}
 gradebook2.courses = {"ecs_235a"}
 
 d_record_1 = Resource()
-d_record_1.id = "donor_record_1"
+d_record_1.name = "donor_record_1"
 d_record_1.type = "donor_record"
 d_record_1.departments = {"ecs", "eec"}
 
 finance1 = Resource()
-finance1.id = "fin1"
+finance1.name = "fin1"
 finance1.type = "finacial_record"
 finance1.departments = {"eec"}
 

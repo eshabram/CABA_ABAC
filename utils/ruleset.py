@@ -33,7 +33,7 @@ def check_your_privilege(subject, resource):
     # Admin can perform all actions on all resources
     READ, WRITE, EXECUTE, OWN = tuple(x or subject.role in {"admin"} for x in (READ, WRITE, EXECUTE, OWN))
     
-    print(f'Subject ID = {subject.id} - {resource.id} - Read: {READ} - Write: {WRITE} - Execute: {EXECUTE} - Own: {OWN}')
+    print(f'Subject ID = {subject.id} - Res ID: {resource.id} - Read: {READ} - Write: {WRITE} - Execute: {EXECUTE} - Own: {OWN}')
 
     return READ, WRITE, EXECUTE, OWN
 

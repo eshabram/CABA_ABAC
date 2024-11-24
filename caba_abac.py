@@ -1,7 +1,8 @@
-import subprocess, readline, argparse, platform, sys, os
+import subprocess, readline, argparse, sys, os
 from utils.ruleset import check_your_privilege 
-from utils.utils import authenticate_user, resource_types
+from utils.utils import login, create_file, get_metadata, set_metadata
 from utils.entities import Subject, Resource
+from db.db_tables import load_organization
 from utils.organization import SUBJECTS_LIST, RESOURCE_LIST
 from db.db_interface import add_subject, add_resource, subject_row, resource_row, password_row
 
@@ -26,63 +27,6 @@ def enter_sandbox():
         os.makedirs(sandbox_dir)
     # use os instead of subprocess function to globally change dir
     os.chdir(sandbox_dir)
-
-def set_metadata(path, identifier):
-    try:
-        if platform.system() == "Darwin":  # macOS
-            subprocess.run(["xattr", "-w", 'id', identifier, path], check=True)
-        else:  # Linux
-            subprocess.run(["setfattr", "-n", 'id', "-v", identifier, path], check=True)
-        print(f"Successfully set id to {identifier} on {path}")
-    except Exception as e:
-        print(f'Error: {e}')
-
-def get_metadata(path):
-    try:
-        if platform.system() == "Darwin":  # macOS
-            result = subprocess.run(["xattr", "-p", "id", path], capture_output=True, text=True)
-        else:  # Linux
-            result = subprocess.run(["getfattr", "-n", "id", "--only-values", path], capture_output=True, text=True)
-        
-        return result.stdout.strip()
-    except Exception as e:
-        print(f'Error: {e}')
-    
-def select_file_type(SUBJECT):
-    # TODO: we pass in subject so that we can run checks on what kinds of resources they can create
-    print(f"Select resource type to create:")
-    for i, type in enumerate(resource_types):
-        print(f'{i}. {type}')
-    try:
-        num = int(input('> '))
-        print(num)
-        sys.exit()
-    except ValueError as e:
-        print(f'Error: invalid selection')
-        sys.exit()
-
-def create_file(path):
-    if not os.path.exists(path):
-        file_type = select_file_type(SUBJECT)
-        try:
-            with open(path, 'w') as file:
-                file.write("")
-            set_metadata(identifier=SUBJECT.id, path=path)
-            return True
-        except Exception as e:
-            print(e)
-            # print("Error: file was not created.")
-            return False
-    else:
-        print("Error: file already exists")
-def load_organization():
-    for subject in SUBJECTS_LIST:
-        add_subject(subject)
-
-    for resource in RESOURCE_LIST:
-        success = create_file(resource.id) # name the file with id
-        if success:
-            add_resource(resource)
 
 def run_shell(args):
     global SUBJECT
@@ -239,12 +183,15 @@ if __name__=="__main__":
                     description='ABAC policy simulator',
                     epilog='Text at the bottom of help')
     parser.add_argument('-d', '--dev', action='store_true', help='Developer mode')
+    parser.add_argument('-rl', '--reload', action='store_true', help='Reload Database')
     args = parser.parse_args()
+
+    if args.reload:
+        load_organization()
 
     # check for developer mode
     if args.dev:
         SUBJECT = Subject(id="admin1", role="admin")
     else: 
-        SUBJECT = authenticate_user() # TODO: Akanksha, here is where the authentication will be called from. 
-    load_organization()
+        SUBJECT = login()
     run_shell(args)
