@@ -2,16 +2,21 @@
 The Cool and Absolutely Bad Ass Attribute Based Access Control Policy Simulator. This project is a shell implementation of ABAC policy using a university system as the organizational body. It is meant to demonstrate how an ABAC policy can work in a shell environment, as well as to demonstrate the power and efficiency that ABAC policies can provide. 
 
 ### Getting Started:
-To run the program from the main directory of the repository simply start the ```abac-shell.py``` script like so:
+To run the program from the main directory of the repository simply start the ```caba-abac.py``` script like so:
 ```
-python abac-shell.py
+python caba-abac.py
 ```
 To print a help menu of commands that can be run, simply type in ```help``` or ```?```.
 
+If you want a clean test db you can run the script with the ```-rl``` argument like so:
+```
+python caba-abac.py -rl
+```
+
+For logging into the system, simply look in the ```utils/organization.py``` for a given user and corresponding password.
+
 TODO: 
-- [x] Define organization with roles, subjects, resources, and attributes.
-- [x] Establish subject, resource, and ruleset db tables. Subjects and resources will have unique IDs and various attributes in the form of dictionaries or lists. These tables are non-relational.
-- [x] Define the ruleset. A rule consists of 4 items: a subject condition, a resource condition, a constraint, and an action.
+
 
 ## Our Organization: University
 ### Subjects:

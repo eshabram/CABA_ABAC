@@ -46,7 +46,6 @@ def load_organization():
             # add the user attributes and hashed passwords and salts 
             add_subject(sub)
             password, salt = hash_password(PASSWORD_LIST[i], sub.id)
-            print(type(password))
             add_password(sub.id, password, salt)
         except Exception as e:
             print(e)

@@ -20,7 +20,6 @@ def add_subject(subject):
         cur.execute('''INSERT INTO Subjects (id, role, departments, subdepartments, is_chair, courses_taught, courses_taken) VALUES (?, ?, ?, ?, ?, ?, ?)''',
                     (subject.id, subject.role, departments_str, subdepartments_str, is_chair, courses_taught_str, courses_taken_str))
         conn.commit()
-        # print(subject_row(subject.id))
     except Exception as e:
         print(f"Error inserting subject: {e}")
 
