@@ -14,6 +14,7 @@ def load_organization():
     # Subjects table
     cur.execute('''CREATE TABLE IF NOT EXISTS Subjects (
                     id TEXT PRIMARY KEY,
+                    name TEXT NULL,
                     role TEXT NULL,
                     departments TEXT NULL,
                     subdepartments TEXT NUL,

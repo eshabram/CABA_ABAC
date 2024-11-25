@@ -1,10 +1,10 @@
-import subprocess, readline, argparse, sys, os
+import subprocess, readline, argparse, sys, os, shutil
 from utils.ruleset import check_your_privilege 
 from utils.utils import login, create_file, get_metadata, set_metadata
 from utils.entities import Subject, Resource
 from db.db_tables import load_organization
 from utils.organization import SUBJECTS_LIST, RESOURCE_LIST
-from db.db_interface import add_subject, add_resource, subject_row, resource_row, password_row
+from db.db_interface import add_subject, add_resource, subject_row, resource_row, password_row, print_table
 
 allowed_cmds = ["ls", "pwd", "echo"]
 internal_cmds = ["read", "write", "touch"]
@@ -28,13 +28,23 @@ def enter_sandbox():
     # use os instead of subprocess function to globally change dir
     os.chdir(sandbox_dir)
 
+def reset_sandbox():
+    try:
+        sandbox_dir = os.path.join(current_dir, 'sandbox')
+        shutil.rmtree(sandbox_dir)
+    except Exception as e:
+        print(e)
+    enter_sandbox()
+
 def run_shell(args):
     global SUBJECT
 
     # main loop for the shell
     while True:
         command = input(f"{shell} {cmd_history[command_idx]}")
-        cmd_tokens = command.split(" ")
+        cmd_tokens = command.split()
+        if not command:
+            continue
         
         # Add command to history
         if command:
@@ -52,6 +62,9 @@ def run_shell(args):
                     "whoami                    -> Print your attributes\n" \
                     "read  <filename>          -> Read file\n" \
                     "write <filename>          -> Opens file for writing in nano\n" \
+                    "new-resource <res-name>   -> Create a resource \n" \
+                    "new-subject <new-uid>     -> Create a new subject\n" \
+                    "edit-subject <uid>        -> Edit an existing subject\n" \
                     "exit, quit                -> Exits the program\n" \
                     "\nSHELL COMMANDS:\n"\
                     "ls, pwd, echo, touch, rm  -> These commands work like normal"
@@ -60,11 +73,19 @@ def run_shell(args):
         elif cmd_tokens[0] == "whoami":
             print(SUBJECT)
 
-        # create a file with our own implementation of 'touch' command 
+        # create a 'user_file' with our own implementation of 'touch' command 
         elif cmd_tokens[0] == "touch":
             if len(cmd_tokens) > 1:
                 path = cmd_tokens[1].split("/")[-1] # currently only allow files in current dir
-                create_file(path)
+                create_file(path, SUBJECT, touch=True)
+            else:
+                print("Please provide a path")
+
+        # create a resource
+        elif cmd_tokens[0] == "new-resource":
+            if len(cmd_tokens) > 1:
+                path = cmd_tokens[1].split("/")[-1] # currently only allow files in current dir
+                create_file(path, SUBJECT)
             else:
                 print("Please provide a path")
 
@@ -159,10 +180,10 @@ def run_shell(args):
                     print('Error: cannot modify subjects')
             else:
                 print("Error: no subject specified")
-
-        # do nothing
-        elif cmd_tokens[0] == "":
-            continue
+        
+        elif cmd_tokens[0] == "db":
+            print_table('Subjects')
+            print_table('Resources')
 
         # run allowed shell commands
         elif cmd_tokens[0] in allowed_cmds:
@@ -183,15 +204,19 @@ if __name__=="__main__":
                     description='ABAC policy simulator',
                     epilog='Text at the bottom of help')
     parser.add_argument('-d', '--dev', action='store_true', help='Developer mode')
+    parser.add_argument('-g', '--guest', action='store_true', help='Guest mode')
     parser.add_argument('-rl', '--reload', action='store_true', help='Reload Database')
     args = parser.parse_args()
 
     if args.reload:
+        reset_sandbox()
         load_organization()
 
     # check for developer mode
     if args.dev:
         SUBJECT = Subject(id="admin1", role="admin")
+    elif args.guest:
+        SUBJECT = Subject(id='guest', role='guest')
     else: 
         SUBJECT = login()
     run_shell(args)

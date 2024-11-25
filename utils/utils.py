@@ -1,6 +1,6 @@
 import os, hashlib, sqlite3, sys, base64, platform, subprocess
-from db.db_interface import subject_row, add_password
-from utils.entities import RESOURCE_TYPES
+from db.db_interface import subject_row, add_password, add_resource
+from utils.entities import FILE_TYPES, Subject, Resource
 from getpass import getpass
 
 conn=sqlite3.connect('db/attributes.db')
@@ -12,7 +12,7 @@ def set_metadata(path, identifier):
             subprocess.run(["xattr", "-w", 'id', identifier, path], check=True)
         else:  # Linux
             subprocess.run(["setfattr", "-n", 'id', "-v", identifier, path], check=True)
-        print(f"Successfully set id to {identifier} on {path}")
+        # print(f"Successfully set id to {identifier} on {path}")
     except Exception as e:
         print(f'Error: {e}')
 
@@ -27,38 +27,75 @@ def get_metadata(path):
     except Exception as e:
         print(f'Error: {e}')
     
-def select_file_type(sub):
+def create_resource(sub, path, user_file=False):
     # TODO: we pass in subject so that we can run checks on what kinds of resources they can create
-    print(f"Select resource type to create:")
-    for i, type in enumerate(RESOURCE_TYPES):
-        print(f'{i}. {type}')
-    try:
-        num = int(input('> '))
-        print(num)
-        sys.exit()
-    except ValueError as e:
-        print(f'Error: invalid selection')
-        sys.exit()
-
-def create_file(path, sub):
-    if not os.path.exists(path):
-        file_type = select_file_type(sub)
+    if not user_file:
+        print(f"Select resource type to create:")
+        for i, type in enumerate(FILE_TYPES):
+            print(f'{i}. {type}')
         try:
-            with open(path, 'w') as file:
-                file.write("")
-            set_metadata(identifier=str(sub.id), path=path)
-            return True
-        except Exception as e:
-            print(e)
-            # print("Error: file was not created.")
-            return False
+            num = int(input('> '))
+            if num >= 0 and num <= len(FILE_TYPES):
+                if num == 0 and sub.role in ['professor', 'admin']:
+                    print('Select course:')
+                    # convert set to list for indexing
+                    course_list = sub.courses_taught
+                    for i, course in enumerate(course_list):
+                        print(f'{i}. {course}')
+                    num = int(input('> '))
+                    if num >= 0 and num <= len(sub.courses_taught):
+                        return Resource(name=path, owner=sub.id, type='gradebook', courses={course_list[num]}), True
+                    else:
+                        print('Invalid selection')
+                        return Resource(), False
+                elif num == 1 and ('reg' in sub.departments or sub.role == 'admin'):
+                    return
+                elif num == 2 and ('fo' in sub.departments or sub.role == 'admin'):
+                    return
+                elif num == 3 and ('fo' in sub.departments or sub.role == 'admin'):
+                    return
+                elif num == 4:
+                    return Resource(name=path, owner=sub.id, type='user_file'), True
+                else:
+                    print("You lack privileges to create that resource.")
+            else:
+                print('Invalid selection')
+                return Resource(), False
+
+        except ValueError as e:
+            print(f'Error: invalid selection')
+            sys.exit()
+    else:
+        return Resource(name=path, owner=sub.id, type='user_file'), True
+
+def create_file(path, sub, touch=False):
+    if not os.path.exists(path):
+        # create a resource. If you are a guest or if 'touch' was used, simply create a user_file
+        if touch or sub.role == 'guest':
+            res, flag = create_resource(sub, path, user_file=True)
+        else:
+            res, flag = create_resource(sub, path)     
+        if flag:   
+            try:
+                # create an actual file
+                with open(path, 'w') as file:
+                    file.write("")
+                res_id = add_resource(res)
+                set_metadata(path=path, identifier=str(res_id))
+                return True
+            except Exception as e:
+                print(e)
+                # print("Error: file was not created.")
+                return False
+        else:
+            return
     else:
         print("Error: file already exists")
 
 def load_file(path, res):
     with open(path, 'w') as file:
         file.write(f"{res}")
-    set_metadata(identifier=str(res.id), path=path)
+    set_metadata(path=path, identifier=str(res.id))
 
 def verify_password(password, salt):
     # Decode the Base64 encoded salt
