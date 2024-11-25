@@ -1,19 +1,19 @@
-def check_rules(subject, resource):
+def check_your_privilege(subject, resource):
     """
     This function checks all the rules defined for our ABAC system.  
     """
-    READ, WRITE, EXECUTE = False, False, False
+    READ, WRITE, EXECUTE, OWN = False, False, False, False
     # A professor or a TA can read a gradebook if they are teaching/TA the course.
-    READ = READ or (subject.role in {"professor", "student"} and resource.type == "gradebook" and resource.courses <= subject.courses_taught) 
+    READ = READ or (subject.role in {"professor", "student"} and resource.type == "gradebook" and subject.courses_taught >= resource.courses) 
 
     # A professor can write to a gradebook if they teach the course
-    WRITE = WRITE or (subject.role in {"professor"} and resource.type == "gradebook" and resource.courses <= subject.courses_taught)
+    WRITE = WRITE or (subject.role in {"professor"} and resource.type == "gradebook" and subject.courses_taught >= resource.courses)
 
     # The Chancelor can read donor records.
     READ = READ or (subject.role in {"chancellor"} and resource.type == "donor_record")
 
     # A person in the finacial office can read a donor record if the departments that were donated to are in their subdepartments.
-    READ = READ or ("fo" in subject.departments and resource.type == "donor_record" and subject.departments >= resource.subdepartments) 
+    READ, WRITE = tuple(x or "fo" in subject.departments and resource.type == "donor_record" and subject.subdepartments >= resource.departments for x in (READ, WRITE)) 
 
     # A person can read their own transcript.  
     READ = READ or (subject.role in {"student"} and resource.type == "transcript" and subject.id == resource.subject) 
@@ -27,10 +27,13 @@ def check_rules(subject, resource):
     # A person working in finacial office can read and write any finacial record.
     READ, WRITE = tuple(x or "fo" in subject.departments and resource.type == "finacial_record" for x in (READ, WRITE))
 
-    # Admin can perform all actions on all resources
-    READ, WRITE, EXECUTE = tuple(x or subject.role in {"admin"} for x in (READ, WRITE, EXECUTE))
-    
-    print(f'Subject ID = {subject.id} - {resource.id} - Read: {READ} - Write: {WRITE} - Execute: {EXECUTE}')
+    # If you are the owner of a file, you can do anything with it. 
+    READ, WRITE, EXECUTE, OWN = tuple(x or subject.id == resource.owner for x in (READ, WRITE, EXECUTE, OWN))
 
-    return READ, WRITE, EXECUTE
+    # Admin can perform all actions on all resources
+    READ, WRITE, EXECUTE, OWN = tuple(x or subject.role in {"admin"} for x in (READ, WRITE, EXECUTE, OWN))
+    
+    print(f'Subject ID = {subject.id} - Res ID: {resource.name} - Read: {READ} - Write: {WRITE} - Execute: {EXECUTE} - Own: {OWN}')
+
+    return READ, WRITE, EXECUTE, OWN
 
