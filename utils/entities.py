@@ -2,10 +2,11 @@ DEPARTMENTS = []
 RESOURCE_TYPES = ["user_file", "gradebook", "transcript", "finacial_record", "donor_record"]
 
 class Subject():
-    def __init__(self, id="", role="", departments=set(), is_chair=False, courses_taught=set(), courses_taken=set()):
+    def __init__(self, id="", role="", departments=set(), subdepartments=set(), is_chair=False, courses_taught=set(), courses_taken=set()):
         self.id = id
         self.role = role
         self.departments = departments
+        self.subdepartments = subdepartments
         self.is_chair = is_chair
         self.courses_taught = courses_taught
         self.courses_taken = courses_taken
@@ -15,6 +16,7 @@ class Subject():
                 f"  id='{self.id}',\n"
                 f"  role='{self.role}',\n"
                 f"  departments={self.departments if self.departments else '{}'},\n"
+                f"  subdepatrments={self.subdepartments},\n"
                 f"  is_chair={self.is_chair},\n"
                 f"  courses_taught={self.courses_taught if self.courses_taught else '{}'},\n"
                 f"  courses_taken={self.courses_taken if self.courses_taken else '{}'}\n"

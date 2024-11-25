@@ -39,7 +39,8 @@ lucy.departments = {"reg"}
 carl = Subject()
 carl.id = "carl"
 carl.role = "staff"
-carl.departments = {"fo", "ecs", "eec"}
+carl.departments = {"fo"}
+carl.subdepartments = {"ecs", "eec"}
 
 SUBJECTS_LIST = [admin, elliot, gary, matt, dipak, lucy, carl]
 PASSWORD_LIST = ['password', 'ikeep$itreal', 'chancellor!!', 'supersecret!', 'lakjsdhffdsa$', 'kkajsdf&&&&', 'iamc4rl']

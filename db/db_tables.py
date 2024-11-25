@@ -16,6 +16,7 @@ def load_organization():
                     id TEXT PRIMARY KEY,
                     role TEXT NULL,
                     departments TEXT NULL,
+                    subdepartments TEXT NUL,
                     is_chair BOOLEAN NULL,
                     courses_taught TEXT NULL,
                     courses_taken TEXT NULL

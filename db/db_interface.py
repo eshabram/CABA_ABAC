@@ -12,12 +12,13 @@ def add_subject(subject):
     try:
         # convert values for storage
         departments_str = ",".join(subject.departments) if subject.departments else None
+        subdepartments_str = ",".join(subject.subdepartments) if subject.subdepartments else None
         courses_taught_str = ",".join(subject.courses_taught) if subject.courses_taught else None
         courses_taken_str = ",".join(subject.courses_taken) if subject.courses_taken else None
         is_chair = 1 if subject.is_chair else 0
 
-        cur.execute('''INSERT INTO Subjects (id, role, departments, is_chair, courses_taught, courses_taken) VALUES (?, ?, ?, ?, ?, ?)''',
-                    (subject.id, subject.role, departments_str, is_chair, courses_taught_str, courses_taken_str))
+        cur.execute('''INSERT INTO Subjects (id, role, departments, subdepartments, is_chair, courses_taught, courses_taken) VALUES (?, ?, ?, ?, ?, ?, ?)''',
+                    (subject.id, subject.role, departments_str, subdepartments_str, is_chair, courses_taught_str, courses_taken_str))
         conn.commit()
         # print(subject_row(subject.id))
     except Exception as e:

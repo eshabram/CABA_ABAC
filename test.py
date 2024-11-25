@@ -36,23 +36,5 @@ def run_privilege_check():
     READ, WRITE, EXECUTE, OWN = check_your_privilege(admin, Resource()) # hand function a default object for execute actions like create_user
 
 if __name__ == "__main__":
-    # run_privilege_check()
-
-    password = "password"
-    uname = "admin1"
-
-    # Generate a hash and salt
-    hashed_password, salt = hash_password(password, uname)
-    print(f"Hashed Password: {hashed_password}")
-    print(f"Salt: {salt}")
-
-    # Verify the password
-    verification_hash = verify_password(password, salt)
-    print(f"Verification Hash: {verification_hash}")
-
-    # Check if the hashes match
-    if hashed_password == verification_hash:
-        print("Match: The hashes are the same.")
-    else:
-        print("Mismatch: The hashes are different.")
+    run_privilege_check()
 
