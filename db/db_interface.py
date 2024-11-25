@@ -64,9 +64,10 @@ def subject_row(id):
             courses_taught=set(row[6].split(",")) if row[6] else set(),  # Convert back to set
             courses_taken=set(row[7].split(",")) if row[7] else set()  # Convert back to set
         )
+        return subject
     else:
         print(f"No subject found with id {id}")
-    return subject
+        return Subject()
 
 def resource_row(id): # TODO: continue to ensure the ids are the ones saved and returned, and not the names
     query = "SELECT * FROM Resources WHERE id = ? LIMIT 1"

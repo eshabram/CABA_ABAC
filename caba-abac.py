@@ -126,7 +126,7 @@ def run_shell(args):
                             except subprocess.CalledProcessError as e:
                                 print(f"Error: {e}")
                         else:
-                            print("Error: you do not have READ permissions on this file")
+                            print("Access Denied: you do not have READ permissions on this file")
                     else:
                         print("Error: no db entry for resource")
                 else:

@@ -49,7 +49,12 @@ def create_resource(sub, path, user_file=False):
                         print('Invalid selection')
                         return Resource(), False
                 elif num == 1 and ('reg' in sub.departments or sub.role == 'admin'):
-                    return
+                    uid = input("Enter student's uid: ")
+                    student = subject_row(uid)
+                    if sub.id != '':
+                        return Resource(name=path, owner=sub.id, type='transcript', subject=student.id), True 
+                    else:
+                        return Resource(), False
                 elif num == 2 and ('fo' in sub.departments or sub.role == 'admin'):
                     return
                 elif num == 3 and ('fo' in sub.departments or sub.role == 'admin'):
