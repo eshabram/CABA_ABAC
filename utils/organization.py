@@ -53,8 +53,23 @@ carl.role = "staff"
 carl.departments = {"fo"}
 carl.subdepartments = {"ecs", "eec"}
 
-SUBJECTS_LIST = [admin, guest, elliot, gary, matt, dipak, lucy, carl]
-PASSWORD_LIST = ['password', 'password', '1234', 'chancellor!!', 'supersecret!', 'lakjsdhffdsa$', 'kkajsdf&&&&', 'iamc4rl']
+jimbo = Subject()
+jimbo.id = "jimbo"
+jimbo.name = "Jimbo Kimbo"
+jimbo.role = "staff"
+jimbo.departments = {"fo"}
+jimbo.subdepartments = {"ecs"}
+
+bob = Subject()
+bob.id = 'bob'
+bob.name = "Bob Slob" 
+bob.role = "student"
+bob.departments = {"ecs"}
+bob.courses_taught = {"ecs_252"} # lets pretend that I am the TA for the computer networks course
+bob.courses_taken = {"ecs_235a", "ecs_252"} 
+
+SUBJECTS_LIST = [admin, guest, elliot, gary, matt, dipak, lucy, carl, jimbo, bob]
+PASSWORD_LIST = ['password', 'password', '1234', 'chancellor!!', 'supersecret!', 'lakjsdhffdsa$', 'anothersolidpassword', 'iamcarl', 'jimbo!!!', 'bobspa$$word']
 
 ###################### Resources #################################
 transcript1 = Resource()
@@ -88,9 +103,34 @@ d_record_1.name = "donor_record_1"
 d_record_1.type = "donor_record"
 d_record_1.departments = {"ecs", "eec"}
 
+d_record_2 = Resource()
+d_record_2.name = "donor_record_2"
+d_record_2.type = "donor_record"
+d_record_2.departments = {"eec"}
+
 finance1 = Resource()
 finance1.name = "fin1"
 finance1.type = "finacial_record"
+finance1.subject = "eshabram"
 finance1.departments = {"eec"}
 
-RESOURCE_LIST = [transcript1, transcript2, gradebook1, gradebook2,  d_record_1, finance1]
+finance2 = Resource()
+finance2.name = "fin2"
+finance2.type = "finacial_record"
+finance2.subject = "bob"
+finance2.departments = {"eec"}
+
+user_file = Resource()
+user_file.name = "ufile"
+user_file.type = "user_file"
+user_file.owner = "guest"
+
+user_file1 = Resource()
+user_file1.name = "ufile1"
+user_file1.type = "user_file"
+user_file1.owner = "not guest"
+
+edit_crs = Resource()
+edit_crs.type = "edit_courses"
+
+RESOURCE_LIST = [transcript1, transcript2, gradebook1, gradebook2,  d_record_1, d_record_2, finance1, finance2, user_file, user_file1, edit_crs]

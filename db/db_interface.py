@@ -69,7 +69,7 @@ def subject_row(id):
         print(f"No subject found with id {id}")
         return Subject()
 
-def resource_row(id): # TODO: continue to ensure the ids are the ones saved and returned, and not the names
+def resource_row(id):
     query = "SELECT * FROM Resources WHERE id = ? LIMIT 1"
     cur.execute(query, (id,))
     row = cur.fetchone() 
@@ -86,14 +86,50 @@ def resource_row(id): # TODO: continue to ensure the ids are the ones saved and 
         )
         return resource
     else:
-        return
+        return None
 
+def delete_subject(id):
+    query = "DELETE FROM Subjects WHERE id = ?"
+    cur.execute(query, (id,))
+    conn.commit()  # Save changes to the database
+
+    # Check if any rows were affected
+    if cur.rowcount > 0:
+        print(f"Subject with id {id} successfully deleted.")
+    else:
+        print(f"No subject found with id {id}.")
+
+def delete_resource(id, path):
+    query = "DELETE FROM Resources WHERE id = ?"
+    cur.execute(query, (id,))
+    conn.commit()  # Save changes to the database
+
+    # Check if any rows were affected
+    if cur.rowcount > 0:
+        print(f"{path} successfully deleted.")
+        return True
+    else:
+        print(f"{id} not found in Resources table")
+        return False
 
 def password_row(id):
     query = "SELECT * FROM Passwords WHERE id = ? LIMIT 1"
     cur.execute(query, (id,))
     rows = cur.fetchone() 
     return rows
+
+def delete_password(id):
+    query = "DELETE FROM Passwords WHERE id = ?"
+    cur.execute(query, (id,))
+    conn.commit()  # Save changes to the database
+
+    # Check if any rows were affected
+    if cur.rowcount > 0:
+        print(f"Password for id {id} successfully deleted.")
+        return True
+    else:
+        print(f"No password found for id {id}.")
+        return False
 
 def print_table(table):
     cur.execute(f"SELECT * FROM {table}")

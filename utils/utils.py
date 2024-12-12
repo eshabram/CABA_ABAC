@@ -1,6 +1,7 @@
 import os, hashlib, sqlite3, sys, base64, platform, subprocess
 from db.db_interface import subject_row, add_password, add_resource
-from utils.entities import FILE_TYPES, Subject, Resource
+from utils.entities import FILE_TYPES, DEPARTMENTS, Subject, Resource
+from utils.ruleset import check_your_privilege
 from getpass import getpass
 
 conn=sqlite3.connect('db/attributes.db')
@@ -28,7 +29,15 @@ def get_metadata(path):
         print(f'Error: {e}')
     
 def create_resource(sub, path, user_file=False):
-    # TODO: we pass in subject so that we can run checks on what kinds of resources they can create
+    """
+    This function implements the interface for creating resources of specific types. The resource
+    is first built based on user selections and is then tested against the subject for execute 
+    permissions. If execute, then the resource can be created. This allows for granularity in who
+    can create what resource. It takes a Subject(), path or name, and argument for simple userfile 
+    creation. It returns a Resource and a flag. 
+    """
+    res = Resource(name=path, owner=sub.id)
+    flag = False
     if not user_file:
         print(f"Select resource type to create:")
         for i, type in enumerate(FILE_TYPES):
@@ -36,42 +45,78 @@ def create_resource(sub, path, user_file=False):
         try:
             num = int(input('> '))
             if num >= 0 and num <= len(FILE_TYPES):
-                if num == 0 and sub.role in ['professor', 'admin']:
-                    print('Select course:')
+                if num == 0: # grade book 
+                    course_list = list(sub.courses_taught)
+                    print(f"Select course (0-{len(course_list) - 1}):")
                     # convert set to list for indexing
-                    course_list = sub.courses_taught
                     for i, course in enumerate(course_list):
                         print(f'{i}. {course}')
                     num = int(input('> '))
                     if num >= 0 and num <= len(sub.courses_taught):
-                        return Resource(name=path, owner=sub.id, type='gradebook', courses={course_list[num]}), True
+                        res.type = 'gradebook'
+                        res.courses = {course_list[num]}
+                        flag = True
                     else:
                         print('Invalid selection')
-                        return Resource(), False
-                elif num == 1 and ('reg' in sub.departments or sub.role == 'admin'):
+
+                elif num == 1: # transcript
                     uid = input("Enter student's uid: ")
                     student = subject_row(uid)
-                    if sub.id != '':
-                        return Resource(name=path, owner=sub.id, type='transcript', subject=student.id), True 
+                    if student.id != '':
+                        res.type = 'transcript'
+                        res.subject = uid
+                        flag = True
+
+                elif num == 2: # finacial record
+                    # list the departments for selection
+                    print(f'Select department (0-{len(DEPARTMENTS) - 1})')
+                    for i, dept in enumerate(DEPARTMENTS):
+                        print(f'{i}. {dept}')
+                    num = int(input('> '))
+                    if num >= 0 and num <= len(DEPARTMENTS):
+                       dept = DEPARTMENTS[num] 
                     else:
-                        return Resource(), False
-                elif num == 2 and ('fo' in sub.departments or sub.role == 'admin'):
-                    return
-                elif num == 3 and ('fo' in sub.departments or sub.role == 'admin'):
-                    return
-                elif num == 4:
-                    return Resource(name=path, owner=sub.id, type='user_file'), True
-                else:
-                    print("You lack privileges to create that resource.")
+                        print('Invalid selection')
+
+                    # chose a student that existsa
+                    id = input('Enter students ID: ')
+                    student = subject_row(id)
+                    if student.id != '':
+                        res.type = 'finacial_record'
+                        res.departments = {dept}
+                        res.subject = id
+                        flag = True
+
+                elif num == 3: # donor record
+                    subdepartments = list(sub.subdepartments)
+                    print(f"Select subdepartment (0-{len(subdepartments) - 1})")
+                    for i, subdept in enumerate(subdepartments):
+                        print(f'{i}. {subdept}')
+                    num = int(input('> '))
+                    if num >= 0 and num <= len(subdepartments):
+                        res.type = 'donor_record'
+                        res.departments = {subdepartments[num]}
+                        flag = True
+                    else:
+                        print('Invalid selection')
+
+                else: # user file
+                    res.type = 'user_file'
+                    flag = True
             else:
                 print('Invalid selection')
-                return Resource(), False
-
         except ValueError as e:
             print(f'Error: invalid selection')
-            sys.exit()
     else:
-        return Resource(name=path, owner=sub.id, type='user_file'), True
+        res.type = 'user_file'
+        flag = True
+    
+    # run the check to determine permissions
+    read, write, execute, own = check_your_privilege(sub, res)
+    if execute and flag:
+        return res, True
+    else:
+        return res, False
 
 def create_file(path, sub, touch=False):
     if not os.path.exists(path):
@@ -139,11 +184,16 @@ def login():
         if not user_exists(uname):
             print("User does not exist.")
             continue
-
-        pwd = getpass("Password: ")
-        if not authenticate_user(uname, pwd):
-            print("Incorrect password.")
-            continue
+        
+        if uname != 'guest':
+            pwd = getpass("Password: ")
+            if not authenticate_user(uname, pwd):
+                print("Incorrect password.")
+                continue
+            else:
+                print("Login successful.")
+                subject = subject_row(uname)
+                return subject
         else:
             print("Login successful.")
             subject = subject_row(uname)
