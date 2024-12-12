@@ -1,9 +1,17 @@
-DEPARTMENTS = []
-RESOURCE_TYPES = ["user_file", "gradebook", "transcript", "finacial_record", "donor_record"]
+# Subject attributes
+ROLES = ["admin", "chancellor", "staff", "professor", "student", "guest"]
+DEPARTMENTS = ["ecs", "eec", "fo", "reg"]
+COURSES = ["ecs_235a", "ecs_235b", "ecs_236", "ecs_252", "ecs_253", "ecs_255", "ecs_257", "eec_201", "eec_244"]
+
+# Resource attributes. Courses and departments are the same.
+RESOURCE_TYPES = ["gradebook", "transcript", "finacial_record", "donor_record", "user_file", "create_user", "edit_user", "delete_user", "edit_courses"]
+FILE_TYPES = ["gradebook", "transcript", "finacial_record", "donor_record", "user_file"]
+COMMANDS = ["create_user", "edit_user", "delete_user", "edit_courses"]
 
 class Subject():
-    def __init__(self, id="", role="", departments=set(), subdepartments=set(), is_chair=False, courses_taught=set(), courses_taken=set()):
+    def __init__(self, id="", name="", role="", departments=set(), subdepartments=set(), is_chair=False, courses_taught=set(), courses_taken=set()):
         self.id = id
+        self.name = name
         self.role = role
         self.departments = departments
         self.subdepartments = subdepartments
@@ -14,6 +22,7 @@ class Subject():
     def __str__(self):
         return (f"Subject(\n"
                 f"  id='{self.id}',\n"
+                f"  name='{self.name},\n"
                 f"  role='{self.role}',\n"
                 f"  departments={self.departments if self.departments else '{}'},\n"
                 f"  subdepatrments={self.subdepartments},\n"

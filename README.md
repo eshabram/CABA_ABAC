@@ -20,7 +20,7 @@ TODO:
 
 ## Our Organization: University
 ### Subjects:
-- Subject roles: "admin", "chancellor", "staff", "professor", "student"
+- Subject roles: "admin", "chancellor", "staff", "professor", "student", "guest"
 - departments: "ecs", "eec", "fo" (Finacial Office), "reg" (registrar)
 - subdepartments: "ecs", "eec", "fo", "reg"
 - is_chair: Boolean

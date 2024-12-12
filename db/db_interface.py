@@ -17,8 +17,8 @@ def add_subject(subject):
         courses_taken_str = ",".join(subject.courses_taken) if subject.courses_taken else None
         is_chair = 1 if subject.is_chair else 0
 
-        cur.execute('''INSERT INTO Subjects (id, role, departments, subdepartments, is_chair, courses_taught, courses_taken) VALUES (?, ?, ?, ?, ?, ?, ?)''',
-                    (subject.id, subject.role, departments_str, subdepartments_str, is_chair, courses_taught_str, courses_taken_str))
+        cur.execute('''INSERT INTO Subjects (id, name, role, departments, subdepartments, is_chair, courses_taught, courses_taken) VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+                    (subject.id, subject.name, subject.role, departments_str, subdepartments_str, is_chair, courses_taught_str, courses_taken_str))
         conn.commit()
     except Exception as e:
         print(f"Error inserting subject: {e}")
@@ -33,7 +33,7 @@ def add_resource(resource):
                     VALUES (?, ?, ?, ?, ?, ?)''', 
                     (resource.name, resource.owner, resource.type, resource.subject, departments_str, courses_str))
         conn.commit()
-        print(f"Resource {resource.type} added for {resource.subject}")
+        # print(f"Resource {resource.type} added for {resource.owner}")
         res_id = cur.lastrowid  # Retrieve the ID of the newly inserted row
         return res_id
     except Exception as e:
@@ -56,17 +56,20 @@ def subject_row(id):
     if row:
         subject = Subject(
             id=row[0],
-            role=row[1],
-            departments=set(row[2].split(",")) if row[2] else set(),  # Convert back to set
-            is_chair=bool(row[3]),  # Convert INTEGER to boolean
-            courses_taught=set(row[4].split(",")) if row[4] else set(),  # Convert back to set
-            courses_taken=set(row[5].split(",")) if row[5] else set()  # Convert back to set
+            name=row[1],
+            role=row[2],
+            departments=set(row[3].split(",")) if row[3] else set(),  # Convert back to set
+            subdepartments=set(row[4].split(",")) if row[4] else set(),
+            is_chair=bool(row[5]),  # Convert INTEGER to boolean
+            courses_taught=set(row[6].split(",")) if row[6] else set(),  # Convert back to set
+            courses_taken=set(row[7].split(",")) if row[7] else set()  # Convert back to set
         )
+        return subject
     else:
         print(f"No subject found with id {id}")
-    return subject
+        return Subject()
 
-def resource_row(id): # TODO: continue to ensure the ids are the ones saved and returned, and not the names
+def resource_row(id):
     query = "SELECT * FROM Resources WHERE id = ? LIMIT 1"
     cur.execute(query, (id,))
     row = cur.fetchone() 
@@ -81,13 +84,52 @@ def resource_row(id): # TODO: continue to ensure the ids are the ones saved and 
             departments=set(row[5].split(",")) if row[5] else set(),  # Convert back to set
             courses=set(row[6].split(",")) if row[6] else set(),  # Convert back to set
         )
-    return resource
+        return resource
+    else:
+        return None
+
+def delete_subject(id):
+    query = "DELETE FROM Subjects WHERE id = ?"
+    cur.execute(query, (id,))
+    conn.commit()  # Save changes to the database
+
+    # Check if any rows were affected
+    if cur.rowcount > 0:
+        print(f"Subject with id {id} successfully deleted.")
+    else:
+        print(f"No subject found with id {id}.")
+
+def delete_resource(id, path):
+    query = "DELETE FROM Resources WHERE id = ?"
+    cur.execute(query, (id,))
+    conn.commit()  # Save changes to the database
+
+    # Check if any rows were affected
+    if cur.rowcount > 0:
+        print(f"{path} successfully deleted.")
+        return True
+    else:
+        print(f"{id} not found in Resources table")
+        return False
 
 def password_row(id):
     query = "SELECT * FROM Passwords WHERE id = ? LIMIT 1"
     cur.execute(query, (id,))
     rows = cur.fetchone() 
     return rows
+
+def delete_password(id):
+    query = "DELETE FROM Passwords WHERE id = ?"
+    cur.execute(query, (id,))
+    conn.commit()  # Save changes to the database
+
+    # Check if any rows were affected
+    if cur.rowcount > 0:
+        print(f"Password for id {id} successfully deleted.")
+        return True
+    else:
+        print(f"No password found for id {id}.")
+        return False
 
 def print_table(table):
     cur.execute(f"SELECT * FROM {table}")

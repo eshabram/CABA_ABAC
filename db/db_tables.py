@@ -1,6 +1,7 @@
 import sqlite3
 from utils.utils import hash_password, load_file
 from utils.organization import SUBJECTS_LIST, PASSWORD_LIST, RESOURCE_LIST
+from utils.entities import COMMANDS
 from db.db_interface import add_subject, add_resource, add_password, print_table, resource_row
 
 conn = sqlite3.connect("db/attributes.db")
@@ -14,6 +15,7 @@ def load_organization():
     # Subjects table
     cur.execute('''CREATE TABLE IF NOT EXISTS Subjects (
                     id TEXT PRIMARY KEY,
+                    name TEXT NULL,
                     role TEXT NULL,
                     departments TEXT NULL,
                     subdepartments TEXT NUL,
@@ -53,8 +55,10 @@ def load_organization():
     print_table('Subjects')
     print_table('Passwords')
     for res in RESOURCE_LIST:
-        res.id = add_resource(res)
-        load_file(res.name, res)
+        # We don't store commands in the db, we simply generate those resources on the fly
+        if res.type not in COMMANDS:
+            res.id = add_resource(res)
+            load_file(res.name, res)
         
 
     print_table('Resources')
