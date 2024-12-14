@@ -180,7 +180,7 @@ def authenticate_user(username, password):
 
 def login():
     for i in range(3):
-        uname = input("Enter username: ")
+        uname = input("Enter username: ").strip()
         if not user_exists(uname):
             print("User does not exist.")
             continue

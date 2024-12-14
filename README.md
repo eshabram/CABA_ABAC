@@ -15,8 +15,6 @@ python caba-abac.py -rl
 
 For logging into the system, simply look in the ```utils/organization.py``` for a given user and corresponding password.
 
-TODO: 
-
 
 ## Our Organization: University
 ### Subjects:
@@ -29,39 +27,43 @@ TODO:
 
 Example1 subject:
 ```python
-subject.id = "Gary_S_May" # has to be unique
-subject.role = "chancellor"
-subject.departments = {"ecs", "eec"}
-subject.is_chair = False
-subject.courses_taught = {}
+gary = Subject()
+gary.id = "gmay"
+gary.name = "Gary S. May" 
+gary.role = "chancellor"
+gary.departments = {"ecs", "eec"}
 ```
 
 Example2 subject: 
 ```python
-subject.id = "Matt_Bishop" # has to be unique
-subject.role = "professor"
-subject.departments = {"ecs"}
-subject.is_chair = False
-subject.courses_taught = {"ecs_235a", "ecs_235b", "ecs_236"}
+matt = Subject()
+matt.id = "mbishop" 
+matt.name = "Matt Bishop"
+matt.role = "professor"
+matt.departments = {"ecs"}
+matt.courses_taught = {"ecs_235a", "ecs_235b", "ecs_236"}
 ```
 
 Example3 subject: 
 ```python
-subject.id = "Dipak_Ghosal" # has to be unique
-subject.role = "professor"
-subject.departments = {"ecs"}
-subject.is_chair = True # note that Dipak is the chair of the cs department
-subject.courses_taught = {"ecs_252", "ecs_253", "ecs_255", "ecs_257"}
+dipak = Subject()
+dipak.id = "dghosal"
+dipak.name = "Dipak Ghosal" 
+dipak.role = "professor"
+dipak.departments = {"ecs"}
+dipak.is_chair = True # note that Dipak is the chair of the cs department
+dipak.courses_taught = {"ecs_252", "ecs_253", "ecs_255", "ecs_257"}
 ```
 
 Example4 subject: 
 ```python
-subject.id = "Elliot_Shabram" # has to be unique
-subject.role = "student"
-subject.departments = {"ecs"}
-subject.is_chair = False
-subject.courses_taught = {"ecs_252"} # lets pretend that I am the TA for the computer networks course
-subject.courses_taken = {"ecs_235a", "ecs_252"} # note the added section courses_taken for students only. For a professor, it is implied.
+elliot = Subject()
+elliot.id = 'eshabram'
+elliot.name = "Elliot Shabram" 
+elliot.role = "student"
+elliot.departments = {"ecs"}
+elliot.courses_taught = {"ecs_252"} # lets pretend that I am the TA for the computer networks course
+elliot.courses_taken = {"ecs_235a", "ecs_252"}  # note the added section courses_taken for students only. For a professor, it is implied.
 ```
 
 ### Resources: 
@@ -135,6 +137,3 @@ In English: "A person in the finacial office can read a donor record if the depa
 #### Actions
 Actions are what you would expect, and usually consist of the typical options: read, write, and execute. 
 
-### Notes on db:
-- change student column to subject in Resource table
-- uid and resource id field should not be a number. It should be a unique string that we set on creation because it will be associated with the object
